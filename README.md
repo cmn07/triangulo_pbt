@@ -43,3 +43,19 @@ venv\Scripts\activate
 ```bash
 python -m pip install -r requirements.txt
 ```
+
+## 4. Teste comum
+
+```bash
+pytest test_triangle_pytest.py
+```
+
+
+## 5. Teste PBT
+
+```bash
+pytest test_triangle_pbt.py
+```
+```bash
+pytest test_triangle_pbt.py --hypothesis-show-statistics
+```
