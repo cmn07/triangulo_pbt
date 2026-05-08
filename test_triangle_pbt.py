@@ -27,6 +27,26 @@ def test_non_positive_invalid(a, b, c):
     assert t.type == TriangleType.INVALID
 
 # Teste desigualdade triangular: a >= b + c
+"""
+Exemplo de failing example:
+No triângulo_classifier.oy trocar a propriedade para a> b + c
+Nunca será possível gerar valores que satisfaçam a condição de desigualdade triangular, pois c = a + b
+Com isso, chegamos a uma situação onde todos os exemplos gerados na fase de geração são inválidos, 
+e o teste falha consistentemente, pois não há casos válidos para testar.
+Failing example: a=1, b= 1, c = 2
+Assert falha, pois Triangle(1, 1, 2) é classificado como TriangleType.ISOSCELES, e não TriangleType.INVALID como esperado.
+Além disso, na fase de shrinking, O hypothesis tentará reduzir os valores para encontrar um exemplo mínimo que falha
+No caso de 0 sucessful shrinks, o shrinking não consegue encontrar um exemplo mais simples que falha, e o teste permanece falho com o exemplo original.
+
+Com o shrinking o hypothesis mostra o menor caso de contraexemplo 
+Falsifying example: test_triangle_inequality(
+           # The test always failed when commented parts were varied together.
+           a=1,  # or any other generated value
+           b=1,  # or any other generated value
+"""
+
+
+
 @given(
     integers(min_value=1),
     integers(min_value=1),
@@ -99,7 +119,6 @@ Gerar entradas validas é difícil
 
 Essa é uma desvantagem do PBT, em alguns casos ele precisa gerar muitos exemplos para encontrar os casos válidos.
 No caso do teste escaleno, este é um teste trivial, mas em testes em grande escala o número de lixo acumulado pode ser muito ineficiente.
-  
 
 """
 

@@ -31,9 +31,9 @@ class Triangle:
 
         # desigualdade triangular
         if (
-            a >= b + c or
-            b >= a + c or
-            c >= a + b
+            a > b + c or
+            b > a + c or
+            c > a + b
         ):
             return TriangleType.INVALID
 
