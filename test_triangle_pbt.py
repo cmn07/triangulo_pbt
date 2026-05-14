@@ -1,4 +1,4 @@
-from hypothesis import given, assume
+from hypothesis import Verbosity, given, assume, settings
 from hypothesis.strategies import integers
 from hypothesis.strategies import sampled_from
 
@@ -7,6 +7,7 @@ from itertools import permutations
 from triangle_classifier import Triangle, TriangleType
 
 # Teste equilátero: todos os lados iguais
+@settings(verbosity=Verbosity.verbose)
 @given(integers(min_value=1))
 def test_equilateral_property(side):
 
@@ -27,26 +28,7 @@ def test_non_positive_invalid(a, b, c):
     assert t.type == TriangleType.INVALID
 
 # Teste desigualdade triangular: a >= b + c
-"""
-Exemplo de failing example:
-No triângulo_classifier.oy trocar a propriedade para a> b + c
-Nunca será possível gerar valores que satisfaçam a condição de desigualdade triangular, pois c = a + b
-Com isso, chegamos a uma situação onde todos os exemplos gerados na fase de geração são inválidos, 
-e o teste falha consistentemente, pois não há casos válidos para testar.
-Failing example: a=1, b= 1, c = 2
-Assert falha, pois Triangle(1, 1, 2) é classificado como TriangleType.ISOSCELES, e não TriangleType.INVALID como esperado.
-Além disso, na fase de shrinking, O hypothesis tentará reduzir os valores para encontrar um exemplo mínimo que falha
-No caso de 0 sucessful shrinks, o shrinking não consegue encontrar um exemplo mais simples que falha, e o teste permanece falho com o exemplo original.
-
-Com o shrinking o hypothesis mostra o menor caso de contraexemplo 
-Falsifying example: test_triangle_inequality(
-           # The test always failed when commented parts were varied together.
-           a=1,  # or any other generated value
-           b=1,  # or any other generated value
-"""
-
-
-
+@settings(verbosity=Verbosity.verbose)
 @given(
     integers(min_value=1),
     integers(min_value=1),
@@ -93,35 +75,6 @@ def test_right_triangle_property(triple):
     assert t.type == TriangleType.RIGHT
 
 # Teste escaleno
-"""
-Saída do teste escaleno:
-test_triangle_pbt.py::test_scalene_property:
-
-  - during generate phase (0.62 seconds):
-    - Typical runtimes: < 1ms, of which < 1ms in data generation
-    - 100 passing examples, 0 failing examples, 659 invalid examples
-    - Events:
-      * 29.64%, invalid because: failed to satisfy assume() in test_scalene_property (line 83)
-      * 23.72%, invalid because: failed to satisfy assume() in test_scalene_property (line 85)
-      * 20.82%, invalid because: failed to satisfy assume() in test_scalene_property (line 84)
-      * 4.48%, invalid because: failed to satisfy assume() in test_scalene_property (line 88)
-      * 4.22%, invalid because: failed to satisfy assume() in test_scalene_property (line 89)
-      * 3.95%, invalid because: failed to satisfy assume() in test_scalene_property (line 87)
-
-  - Stopped because settings.max_examples=100
-
-Devido às diversas restrições (assume) necessárias o hypothesis gera muitos exemplos que são descartados.
-Para gerar 100 exemplos válidos, o hypothesis gerou 659 exemplos inválidos, o que representa uma taxa de filtragem de aproximadamente 86.5%.
-  
-Filtragem excessiva -> teste fica mais lento e menos eficiente, pois muitos exemplos gerados são descartados.
-
-Gerar entradas validas é difícil
-
-Essa é uma desvantagem do PBT, em alguns casos ele precisa gerar muitos exemplos para encontrar os casos válidos.
-No caso do teste escaleno, este é um teste trivial, mas em testes em grande escala o número de lixo acumulado pode ser muito ineficiente.
-
-"""
-
 @given(
     integers(min_value=1, max_value=100),
     integers(min_value=1, max_value=100),
